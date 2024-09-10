@@ -3,11 +3,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Container, Typography, TextField, Button, Paper, Box } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 // Define el esquema de validación con yup
 const schema = yup.object({
   correoElectronico: yup.string().email('Correo electrónico inválido').required('Correo electrónico es requerido'),
   password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('Contraseña es requerida')
 }).required();
+
+
 
 const Login = () => {
   const { control, handleSubmit, formState: { errors } } = useForm({
@@ -28,7 +32,7 @@ const Login = () => {
     }
     console.log('Submitted data:', data);
   };
-
+  const navigate = useNavigate();
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ padding: 3 }}>
@@ -78,6 +82,15 @@ const Login = () => {
             sx={{ mt: 3, mb: 2 }}
           >
             Iniciar Sesión
+          </Button>
+          <Button
+            fullWidth
+            variant="text"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={() => navigate('/register')}
+          >
+            Crear una cuenta
           </Button>
         </Box>
       </Paper>

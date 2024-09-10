@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Paper, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // Define el esquema de validación con yup
 const schema = yup.object({
@@ -24,9 +25,8 @@ const Register = () => {
       estadosId: 5 // Este campo no se mostrará en el formulario
     }
   });
-
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
-    // Añadimos los valores predeterminados a los datos enviados
     const dataWithDefaults = {
       ...data,
       rolId: 5,
@@ -34,17 +34,19 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('https://api.tusitio.com/register', dataWithDefaults);
+    console.log(dataWithDefaults);
+      const response = await axios.post('http://localhost:4000/api/usuarios/register', dataWithDefaults);
       console.log('Respuesta del servidor:', response.data);
-      // Aquí puedes manejar la respuesta del servidor, como redirigir al usuario
-      // o mostrar un mensaje de éxito.
+      navigate('/')
+      
+
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
-      // Aquí puedes manejar el error, como mostrar un mensaje de error.
     }
   };
 
   return (
+    
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ padding: 3 }}>
         <Typography variant="h5" component="h1" gutterBottom>
