@@ -4,8 +4,9 @@ import * as yup from 'yup';
 import { Container, Typography, TextField, Button, Paper, Box } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
-// Define el esquema de validación con yup
+
 const schema = yup.object({
   correoElectronico: yup.string().email('Correo electrónico inválido').required('Correo electrónico es requerido'),
   password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('Contraseña es requerida')
@@ -18,21 +19,40 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
+
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     try{
       const response = await axios.post('http://localhost:4000/api/usuarios/login', data)
       localStorage.setItem('token', response.data.token)
       const token = localStorage.getItem('token');
-      if (token){
-        console.log(token);
-      }
+      if (token) {
+        console.log(token)
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
 
+
+        // Redireccionas según el rol
+        if (decodedToken.rolId === 4) {
+          //navigate('/admin-dashboard'); 
+          console.log('Admin')
+          navigate('/products')
+        } else if (decodedToken.rolId === 5) {
+          //navigate('/user-dashboard'); 
+          console.log('user')
+        } else {
+          //navigate('/unauthorized');
+          console.log('sopas')
+        }
+      } else {
+        console.error('Login fallido');
+      }
     }catch(err){
       console.error(err);
     }
     console.log('Submitted data:', data);
   };
-  const navigate = useNavigate();
+
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ padding: 3 }}>
