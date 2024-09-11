@@ -31,7 +31,7 @@ const Carrito = () => {
                     Precio: ${producto.precio}, Cantidad: {producto.cantidad}
                   </Typography>
                 </CardContent>
-                <IconButton onClick={() => eliminarDelCarrito(producto.id)} color="error">
+                <IconButton onClick={() => eliminarDelCarrito(producto.idProductos)} color="error">
                   <RemoveShoppingCart />
                 </IconButton>
               </Card>
