@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
 const Checkout = () => {
-  const { cart, getCartTotal } = useCart();
+  const { cart, vaciarCarrito, getCartTotal } = useCart();
   const [nombreCompleto, setNombreCompleto] = useState('');
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -18,7 +18,6 @@ const Checkout = () => {
     const token = localStorage.getItem('token');
     const decodedToken = jwtDecode(token);
     const usuariosId = decodedToken.idUsuarios; 
-    console.log(usuariosId + 'ESTE ES EL TOKEN INGO');
 
     const jsonData = {
       usuariosId,
@@ -30,13 +29,13 @@ const Checkout = () => {
       fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0],
       totalOrden: getCartTotal(),
       detalles: cart.map(item => ({
-        productoId: item.id,
+        productoId: item.idProductos,
         cantidad: item.cantidad || 1, 
         precio: item.precio
       }))
     };
     console.log(token)
-    console.log(jsonData);
+    console.log(jsonData + 'este es el json data');
     try {
       const response = await axios.post('http://localhost:4000/api/ordenDetalle/ordenes', jsonData, {
         headers: {
@@ -45,7 +44,8 @@ const Checkout = () => {
         },
       });
       console.log(response.data);
-      navigate('/'); // Redirige a la página de inicio o a donde quieras después de completar el checkout
+      vaciarCarrito();
+      navigate('/products'); // Redirige a la página de inicio o a donde quieras después de completar el checkout
     } catch (error) {
       console.error('Error al crear la orden:', error);
     }

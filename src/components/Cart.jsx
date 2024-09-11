@@ -1,14 +1,14 @@
 import { Grid, Card, CardContent, Typography, IconButton, Button } from '@mui/material';
-import { RemoveShoppingCart } from '@mui/icons-material';
-import PropTypes from 'prop-types';
+import { RemoveShoppingCart, DeleteForever } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext'; // Importa el hook del contexto
+import { useCart } from '../context/CartContext';
 
 const Carrito = () => {
-  const { cart, eliminarDelCarrito, getCartTotal } = useCart(); // Usa el hook para acceder al carrito
+  const { cart, eliminarDelCarrito, vaciarCarrito, getCartTotal } = useCart();
   const navigate = useNavigate();
 
-  const total = getCartTotal(); // Usa la función del contexto para obtener el total
+  const total = getCartTotal();
+  console.log(cart)
 
   return (
     <div style={{ marginTop: '20px' }}>
@@ -18,17 +18,17 @@ const Carrito = () => {
           <Typography variant="h6">El carrito está vacío</Typography>
         ) : (
           cart.map((producto) => (
-            <Grid item xs={12} sm={6} md={4} key={producto.id}>
+            <Grid item xs={12} sm={6} md={4} key={producto.idProductos}>
               <Card>
                 <CardContent>
                   <Typography variant="h5" component="div">
-                    {producto.nombre}
+                    {producto.nombre}, {producto.idProductos}
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
                     Marca: {producto.marca}
                   </Typography>
                   <Typography variant="body1" color="text.primary">
-                    Precio: ${producto.precio}
+                    Precio: ${producto.precio}, Cantidad: {producto.cantidad}
                   </Typography>
                 </CardContent>
                 <IconButton onClick={() => eliminarDelCarrito(producto.id)} color="error">
@@ -46,7 +46,16 @@ const Carrito = () => {
             Total: ${total}
           </Typography>
           <Button variant="contained" color="primary" style={{ marginTop: '10px' }} onClick={() => navigate('/checkout')}>
-           Ir al Checkout
+            Ir al Checkout
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="error" 
+            style={{ marginTop: '10px', marginLeft: '10px' }} 
+            onClick={() => vaciarCarrito()}
+          >
+            Vaciar Carrito
+            <DeleteForever style={{ marginLeft: '8px' }} />
           </Button>
         </div>
       )}

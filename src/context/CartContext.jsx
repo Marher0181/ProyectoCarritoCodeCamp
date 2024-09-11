@@ -1,35 +1,47 @@
 import { createContext, useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 
-// Crea el contexto
+// Crear el contexto
 const CartContext = createContext();
 
 // Proveedor del contexto
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // Función para agregar un producto al carrito
+  // Añadir un producto al carrito
   const agregarAlCarrito = (producto) => {
-    setCart(prevCart => [...prevCart, producto]);
+    setCart((prevCart) => {
+        // Si el producto no existe, agrégalo al carrito
+        return [...prevCart, producto];
+      
+    });
   };
 
-  // Función para eliminar un producto del carrito
+  // Eliminar un producto del carrito
   const eliminarDelCarrito = (id) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== id));
+    setCart((prevCart) => prevCart.filter(producto => producto.idProductos !== id));
   };
 
-  // Función para obtener el total del carrito
+  // Vaciar el carrito
+  const vaciarCarrito = () => {
+    setCart([]);
+  };
+
+  // Obtener el total del carrito
   const getCartTotal = () => {
-    return cart.reduce((sum, producto) => sum + producto.precio, 0);
+    return cart.reduce((total, producto) => total + (producto.precio * producto.cantidad), 0);
   };
 
   return (
-    <CartContext.Provider value={{ cart, agregarAlCarrito, eliminarDelCarrito, getCartTotal }}>
+    <CartContext.Provider value={{ cart, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito, getCartTotal }}>
       {children}
     </CartContext.Provider>
   );
 };
 
-// Hook para usar el contexto
-export const useCart = () => {
-  return useContext(CartContext);
+CartProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
+
+// Hook para usar el contexto
+export const useCart = () => useContext(CartContext);
