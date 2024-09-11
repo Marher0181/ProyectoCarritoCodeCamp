@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
 import axios from 'axios';
-import PropTypes from 'prop-types';
+import { useCart } from '../context/CartContext'; // Asegúrate de importar useCart
 
-function Products({ agregarAlCarrito }) {
+function Products() {
+  const { agregarAlCarrito } = useCart(); // Usa el hook para acceder a agregarAlCarrito
   const [productosList, setProductosList] = useState([]);
 
   useEffect(() => {
@@ -63,9 +64,5 @@ function Products({ agregarAlCarrito }) {
     </div>
   );
 }
-
-Products.propTypes = {
-  agregarAlCarrito: PropTypes.func.isRequired,
-};
 
 export default Products;

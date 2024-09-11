@@ -36,10 +36,11 @@ const Login = () => {
         if (decodedToken.rolId === 4) {
           //navigate('/admin-dashboard'); 
           console.log('Admin')
-          navigate('/products')
+          
         } else if (decodedToken.rolId === 5) {
           //navigate('/user-dashboard'); 
           console.log('user')
+          navigate('/products')
         } else {
           //navigate('/unauthorized');
           console.log('sopas')
