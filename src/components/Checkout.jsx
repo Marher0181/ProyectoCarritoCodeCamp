@@ -1,15 +1,32 @@
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Container, Paper, Typography, Box, TextField, Button } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
+
+const validationSchema = Yup.object().shape({
+  nombreCompleto: Yup.string()
+    .required('El nombre completo es obligatorio'),
+  direccion: Yup.string()
+    .required('La dirección es obligatoria'),
+  telefono: Yup.string()
+    .required('El teléfono es obligatorio')
+    .matches(/^[0-9]{8}$/, 'El teléfono debe tener 10 dígitos'),
+  correoElectronico: Yup.string()
+    .email('El correo electrónico no es válido')
+    .required('El correo electrónico es obligatorio'),
+});
 
 const Checkout = () => {
   const { cart, vaciarCarrito, getCartTotal } = useCart();
   const navigate = useNavigate();
-  const { control, handleSubmit, formState: { errors } } = useForm();
-  
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(validationSchema)
+  });
+
   const onSubmit = async (data) => {
     const token = localStorage.getItem('token');
     const decodedToken = jwtDecode(token);
