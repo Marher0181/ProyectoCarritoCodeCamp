@@ -11,6 +11,7 @@ import AgregarCategoria from './components/AddCategory';
 import Dashboard from './components/Dashboard'
 import OrderDetails from './components/OrderDetails';
 const App = () => {
+  
   return (
     <Router>
       <CartProvider>

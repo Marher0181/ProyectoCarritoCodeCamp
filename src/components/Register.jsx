@@ -162,6 +162,8 @@ const Register = () => {
           </Button>
         </Box>
       </Paper>
+      
+<style></style>
     </Container>
   );
 };

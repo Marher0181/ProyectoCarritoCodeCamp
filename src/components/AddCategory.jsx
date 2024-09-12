@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; // Asegúrate de que estás importando jwtDecode
 
 const AgregarCategoria = () => {
   const [nombre, setNombre] = useState('');
@@ -10,6 +10,9 @@ const AgregarCategoria = () => {
   const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
 
+  const handleGoBack = () => {
+    navigate('/dashboard');
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -49,11 +52,13 @@ const AgregarCategoria = () => {
   };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>Agregar Categoría</Typography>
+    <Container component="main" maxWidth="sm">
+      <Typography variant="h4" gutterBottom>
+        Agregar Categoría
+      </Typography>
       {success && <Alert severity="success">{success}</Alert>}
       {error && <Alert severity="error">{error}</Alert>}
-      <form onSubmit={handleSubmit}>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField 
           label="Nombre de Categoría" 
           fullWidth 
@@ -63,9 +68,23 @@ const AgregarCategoria = () => {
           required 
         />
         <Box mt={2}>
-          <Button type="submit" variant="contained" color="primary">Agregar</Button>
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary"
+            fullWidth
+          >
+            Agregar
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="secondary" 
+            onClick={handleGoBack} 
+            sx={{ ml: 2 }}>
+            Regresar al Dashboard
+          </Button>
         </Box>
-      </form>
+      </Box>
     </Container>
   );
 };

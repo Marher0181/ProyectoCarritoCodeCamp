@@ -1,8 +1,19 @@
 import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  if (!token){
+    return null;
+  }
+  const decodedToken = jwtDecode(token);
+  
+
+  if (decodedToken.rolId === 4){
+    return( null );
+  }
   return (
     <AppBar position="static">
       <Toolbar>
@@ -18,6 +29,7 @@ const Navbar = () => {
           </Button>
         </Container>
       </Toolbar>
+      
     </AppBar>
   );
 };

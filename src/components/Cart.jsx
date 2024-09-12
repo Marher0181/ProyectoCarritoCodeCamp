@@ -59,6 +59,8 @@ const Carrito = () => {
           </Button>
         </div>
       )}
+      
+<style></style>
     </div>
   );
 };

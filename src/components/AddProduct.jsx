@@ -36,7 +36,6 @@ const AddProduct = () => {
             }
           });
 
-          console.log(response.data.categories); // Verifica la respuesta del backend
           setCategories(response.data.categories || []);
         }
       } catch (err) {
@@ -50,17 +49,10 @@ const AddProduct = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'foto') {
-      setFormData({
-        ...formData,
-        [name]: files[0] // Almacena el archivo
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: name === 'foto' ? files[0] : value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -69,23 +61,15 @@ const AddProduct = () => {
       const token = localStorage.getItem('token');
       if (token && userId) {
         const dataToSubmit = new FormData();
-        dataToSubmit.append('categoriaProductos', formData.categoriaProductos);
-        dataToSubmit.append('nombre', formData.nombre);
-        dataToSubmit.append('marca', formData.marca);
-        dataToSubmit.append('codigo', formData.codigo);
-        dataToSubmit.append('stock', formData.stock);
-        dataToSubmit.append('estado', formData.estado);
-        dataToSubmit.append('precio', formData.precio);
-        dataToSubmit.append('fecha_creacion', formData.fecha_creacion);
-        dataToSubmit.append('foto', formData.foto); // Añade el archivo
+        Object.keys(formData).forEach(key => {
+          dataToSubmit.append(key, formData[key]);
+        });
         dataToSubmit.append('usuarios', userId);
-
-        console.log('Datos a enviar:', formData); // Imprime los datos a enviar
 
         const response = await axios.post('http://localhost:4000/api/productos/insertar', dataToSubmit, {
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data' // Importante para el manejo de archivos
+            'Content-Type': 'multipart/form-data'
           }
         });
         console.log(response);
@@ -97,17 +81,16 @@ const AddProduct = () => {
           marca: '',
           codigo: '',
           stock: '',
-          estado: '4', // Valor predeterminado para el campo estado
+          estado: '4',
           precio: '',
           fecha_creacion: '',
-          foto: null // Restablece el archivo
+          foto: null
         });
         setTimeout(() => navigate('/dashboard'), 2000); // Redirige después de 2 segundos
       }
     } catch (err) {
       setError(err.message || 'Error al agregar el producto.');
       setSuccess(null);
-      console.error('Error en la solicitud:', err.response ? err.response.data : err.message);
     }
   };
 
@@ -116,11 +99,11 @@ const AddProduct = () => {
   };
 
   return (
-    <Container>
+    <Container component="main" maxWidth="sm">
       <Typography variant="h4" gutterBottom>Agregar Producto</Typography>
       {success && <Alert severity="success">{success}</Alert>}
       {error && <Alert severity="error">{error}</Alert>}
-      <form onSubmit={handleSubmit}>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
         <FormControl fullWidth margin="normal">
           <InputLabel>Categoría de Productos</InputLabel>
           <Select
@@ -192,12 +175,22 @@ const AddProduct = () => {
           type="date"
           InputLabelProps={{ shrink: true }}
         />
-        <input
-          type="file"
-          name="foto"
-          onChange={handleChange}
-          accept=".png"
-        />
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+          margin="normal"
+          color="primary"
+        >
+          Subir Foto
+          <input
+            type="file"
+            name="foto"
+            onChange={handleChange}
+            accept=".png"
+            hidden
+          />
+        </Button>
         <Box mt={2}>
           <Button variant="contained" color="primary" type="submit">
             Agregar Producto
@@ -210,7 +203,7 @@ const AddProduct = () => {
             Regresar al Dashboard
           </Button>
         </Box>
-      </form>
+      </Box>
     </Container>
   );
 };
