@@ -86,7 +86,7 @@ const AddProduct = () => {
           fecha_creacion: '',
           foto: null
         });
-        setTimeout(() => navigate('/dashboard'), 2000); // Redirige después de 2 segundos
+        setTimeout(() => navigate('/crudProductos'), 2000); // Redirige después de 2 segundos
       }
     } catch (err) {
       setError(err.message || 'Error al agregar el producto.');
@@ -95,7 +95,7 @@ const AddProduct = () => {
   };
 
   const handleGoBack = () => {
-    navigate('/dashboard');
+    navigate('/crudProductos');
   };
 
   return (
@@ -200,7 +200,7 @@ const AddProduct = () => {
             color="secondary" 
             onClick={handleGoBack} 
             sx={{ ml: 2 }}>
-            Regresar al Dashboard
+            Regresar
           </Button>
         </Box>
       </Box>

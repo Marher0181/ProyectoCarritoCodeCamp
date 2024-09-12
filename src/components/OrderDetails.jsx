@@ -62,6 +62,10 @@ const OrderDetails = () => {
     }
   };
 
+  const handlevolver = () => {
+    navigate('/dashboard');
+  };
+
   const handleRejectOrder = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -122,8 +126,16 @@ const OrderDetails = () => {
               variant="contained" 
               color="secondary" 
               onClick={handleRejectOrder}
+              style={{ marginRight: 10 }}
             >
               Cancelar
+            </Button>
+            <Button 
+              variant="contained" 
+              color="secondary" 
+              onClick={handlevolver}
+            >
+              Volver al Dashboard
             </Button>
           </Box>
         </>

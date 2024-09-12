@@ -2,12 +2,17 @@ import { useState, useEffect } from 'react';
 import { Container, Grid, Paper, Button, Typography, Box, CircularProgress, Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const [ordenes, setOrdenes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
+  const handlelogout = () => {
+    localStorage.removeItem('token')
+    navigate('/');
+  };
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -23,7 +28,6 @@ const Dashboard = () => {
           }
         });
         console.log(response);
-        // Extraer el arreglo de órdenes del resultado
         if (response.data && Array.isArray(response.data.result)) {
           setOrdenes(response.data.result[0]);
         } else {
@@ -39,6 +43,7 @@ const Dashboard = () => {
     fetchOrders();
   }, []);
 
+  
   return (
     <Container>
       <Typography variant="h4" gutterBottom>Dashboard</Typography>
@@ -49,20 +54,29 @@ const Dashboard = () => {
             <Box mt={2}>
               <Button 
                 variant="contained" 
-                color="primary" 
+                color="secondary" 
+                style={{ marginLeft: 10 }} 
                 component={Link} 
-                to="/agregar-producto"
+                to="/crudProductos"
               >
-                Agregar Producto
+                Productos
               </Button>
               <Button 
                 variant="contained" 
                 color="secondary" 
                 style={{ marginLeft: 10 }} 
                 component={Link} 
-                to="/agregar-categoria"
+                to="/crudCategorias"
               >
-                Agregar Categoría
+                Categorías
+              </Button>
+              <Button 
+                variant="contained" 
+                color="secondary" 
+                style={{ marginLeft: 10 }} 
+                onClick={handlelogout}
+              >
+                Logout
               </Button>
             </Box>
           </Paper>

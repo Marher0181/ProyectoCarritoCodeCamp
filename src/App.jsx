@@ -10,6 +10,8 @@ import AgregarProducto from './components/AddProduct';
 import AgregarCategoria from './components/AddCategory';
 import Dashboard from './components/Dashboard'
 import OrderDetails from './components/OrderDetails';
+import Productos from './components/CrudProducts'
+import Categorias from './components/CrudCategorias';
 const App = () => {
   
   return (
@@ -26,6 +28,8 @@ const App = () => {
           <Route path="/agregar-producto" element={<AgregarProducto />} />
           <Route path="/agregar-categoria" element={<AgregarCategoria />} />
           <Route path="/orden/:idOrden" element={<OrderDetails />} />
+          <Route path="/crudProductos" element={<Productos />} />
+          <Route path="/crudCategorias" element={<Categorias />} />
         </Routes>
       </CartProvider>
     </Router>

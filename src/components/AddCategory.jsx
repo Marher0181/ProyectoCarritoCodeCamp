@@ -11,7 +11,7 @@ const AgregarCategoria = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate('/dashboard');
+    navigate('/crudCategorias');
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +42,7 @@ const AgregarCategoria = () => {
       setSuccess('Categoría agregada correctamente');
       setError(null);
       setNombre(''); // Limpiar el campo de entrada
-      setTimeout(() => navigate('/dashboard'), 2000); // Redirige al Dashboard después de 2 segundos
+      setTimeout(() => navigate('/crudCategorias'), 2000); // Redirige al Dashboard después de 2 segundos
 
     } catch (err) {
       setError(err.message || 'Error al agregar la categoría.');
@@ -81,7 +81,7 @@ const AgregarCategoria = () => {
             color="secondary" 
             onClick={handleGoBack} 
             sx={{ ml: 2 }}>
-            Regresar al Dashboard
+            Regresar
           </Button>
         </Box>
       </Box>
