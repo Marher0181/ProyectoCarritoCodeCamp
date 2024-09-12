@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Grid, Button, TextField } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Button, TextField, CardMedia } from '@mui/material';
 import axios from 'axios';
 import { useCart } from '../context/CartContext'; // Asegúrate de importar useCart
 
 function Products() {
   const { agregarAlCarrito } = useCart(); // Usa el hook para acceder a agregarAlCarrito
   const [productosList, setProductosList] = useState([]);
-  const [cantidades, setCantidades] = useState({});
+  const [cantidades, setCantidades] = useState([]);
+  const [error, setError] = useState(null); // Añadido para manejar errores
 
   useEffect(() => {
     obtener();
@@ -24,38 +25,44 @@ function Products() {
 
       const response = await axios.get("http://localhost:4000/api/productos/obtener", config);
       console.log(response.data);
-      setProductosList(response.data.result[0]);
+      setProductosList(response.data.result);
     } catch (error) {
       console.error('Error al obtener los productos:', error);
+      setError('No se pudo obtener los productos.'); // Manejo de errores
     }
   };
 
   const handleCantidadChange = (id, cantidad) => {
-    // Asegúrate de que la cantidad sea siempre positiva y dentro del rango del stock
     setCantidades(prev => ({ 
       ...prev, 
-      [id]: Math.min(Math.max(cantidad, 1), productosList.find(p => p.id === id)?.stock || 1) 
+      [id]: Math.min(Math.max(cantidad, 1), productosList.find(p => p.idProducto === id)?.stock || 1) 
     }));
   };
 
   const handleAgregar = (producto) => {
-    const cantidad = cantidades[producto.id] || 1; // Usa la cantidad especificada o 1 si no se ha especificado
-    // Asegúrate de que `cantidad` sea un número positivo
+    const cantidad = cantidades[producto.idProducto] || 1; // Usa la cantidad especificada o 1 si no se ha especificado
     if (cantidad > 0) {
       agregarAlCarrito({ ...producto, cantidad });
       console.log(producto);
-      // Opcional: Restablece la cantidad del producto en el estado después de agregar al carrito
-      setCantidades(prev => ({ ...prev, [producto.id]: 1 }));
+      setCantidades(prev => ({ ...prev, [producto.idProducto]: 1 }));
     }
   };
 
   return (
     <div>
       <Typography variant="h4" gutterBottom>Lista de Productos</Typography>
+      {error && <Typography color="error">{error}</Typography>} {/* Mostrar mensaje de error */}
       <Grid container spacing={4}>
         {productosList.map((producto) => (
           <Grid item xs={12} sm={6} md={4} key={producto.idProducto}>
             <Card sx={{ minWidth: 275, maxWidth: '100%' }}>
+              <CardMedia
+                component="img"
+                height="140"
+                image={`http://localhost:4000/api/productos/imagen/${producto.idProductos}`} // Verifica la URL
+                alt={producto.nombre}
+                onError={(e) => e.target.src = 'path/to/default/image.png'} // Imagen por defecto si falla
+              />
               <CardContent>
                 <Typography variant="h5" component="div">
                   {producto.nombre}
@@ -71,8 +78,8 @@ function Products() {
                 </Typography>
                 <TextField 
                   type="number" 
-                  value={cantidades[producto.id] || 1} 
-                  onChange={(e) => handleCantidadChange(producto.id, Number(e.target.value))}
+                  value={cantidades[producto.idProducto] || 1} 
+                  onChange={(e) => handleCantidadChange(producto.idProducto, Number(e.target.value))}
                   InputProps={{ inputProps: { min: 1, max: producto.stock } }} 
                   label="Cantidad"
                 />
