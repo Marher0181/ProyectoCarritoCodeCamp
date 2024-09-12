@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext'; // Asegúrate de importar useC
 function Products() {
   const { agregarAlCarrito } = useCart(); // Usa el hook para acceder a agregarAlCarrito
   const [productosList, setProductosList] = useState([]);
-  const [cantidades, setCantidades] = useState([]);
+  const [cantidades, setCantidades] = useState({});
   const [error, setError] = useState(null); // Añadido para manejar errores
 
   useEffect(() => {
@@ -33,17 +33,17 @@ function Products() {
   };
 
   const handleCantidadChange = (id, cantidad) => {
+    const producto = productosList.find(p => p.idProductos === id);
     setCantidades(prev => ({ 
       ...prev, 
-      [id]: Math.min(Math.max(cantidad, 1), productosList.find(p => p.idProducto === id)?.stock || 1) 
+      [id]: Math.min(Math.max(cantidad, 1), producto?.stock || 1) 
     }));
   };
 
   const handleAgregar = (producto) => {
-    const cantidad = cantidades[producto.idProducto] || 1; // Usa la cantidad especificada o 1 si no se ha especificado
-    if (cantidad > 0) {
+    const cantidad = cantidades[producto.idProductos] || 1; 
+    if (cantidad > 0 && producto.stock > 0) {
       agregarAlCarrito({ ...producto, cantidad });
-      console.log(producto);
       setCantidades(prev => ({ ...prev, [producto.idProducto]: 1 }));
     }
   };
@@ -61,7 +61,7 @@ function Products() {
                 height="140"
                 image={`http://localhost:4000/api/productos/imagen/${producto.idProductos}`} // Verifica la URL
                 alt={producto.nombre}
-                onError={(e) => e.target.src = 'path/to/default/image.png'} // Imagen por defecto si falla
+                onError={(e) => e.target.src = '../Default/ImagenPredeterminada.png'} // Imagen por defecto si falla
               />
               <CardContent>
                 <Typography variant="h5" component="div">
@@ -78,8 +78,8 @@ function Products() {
                 </Typography>
                 <TextField 
                   type="number" 
-                  value={cantidades[producto.idProducto] || 1} 
-                  onChange={(e) => handleCantidadChange(producto.idProducto, Number(e.target.value))}
+                  value={cantidades[producto.idProductos] || 1} 
+                  onChange={(e) => handleCantidadChange(producto.idProductos, Number(e.target.value))}
                   InputProps={{ inputProps: { min: 1, max: producto.stock } }} 
                   label="Cantidad"
                 />
@@ -88,17 +88,16 @@ function Products() {
                 variant="contained" 
                 color="primary" 
                 onClick={() => handleAgregar(producto)} 
-                sx={{ m: 1 }}>
-                Añadir al Carrito
+                sx={{ m: 1 }}
+                disabled={producto.stock <= 0} // Deshabilita el botón si el stock es 0
+              >
+                {producto.stock <= 0 ? 'Agotado' : 'Añadir al Carrito'}
               </Button>
             </Card>
           </Grid>
         ))}
-        
-<style></style>
       </Grid>
     </div>
-    
   );
 }
 

@@ -1,48 +1,53 @@
-import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import { ShoppingCart, Storefront, ExitToApp } from '@mui/icons-material'; // Importa los iconos
 
 const Navbar = () => {
-  
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  if (!token){
+
+  if (!token) {
     return null;
   }
+
   const decodedToken = jwtDecode(token);
 
-  const handlelogout = () => {
-    localStorage.removeItem('token')
+  const handleLogout = () => {
+    localStorage.removeItem('token');
     navigate('/');
   };
 
-  if (decodedToken.rolId === 4){
-    return( null );
+  if (decodedToken.rolId === 4) {
+    return null;
   }
+
   return (
     <AppBar position="static">
       <Toolbar>
-        <Container>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h6">
             E-Commerce
           </Typography>
-          <Button variant="contained" color="inherit" onClick={() => navigate('/products')}>
-            Productos
-          </Button>
-          <Button color="inherit" onClick={() => navigate('/carrito')}>
-            Carrito
-          </Button>
-          <Button 
-                variant="contained" 
-                color="secondary" 
-                style={{ marginLeft: 10 }} 
-                onClick={handlelogout}
-              >
-                Logout
+          <div>
+            <IconButton color="inherit" onClick={() => navigate('/products')}>
+              <Storefront />
+            </IconButton>
+            <IconButton color="inherit" onClick={() => navigate('/carrito')}>
+              <ShoppingCart />
+            </IconButton>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<ExitToApp />} // Icono para el botón de Logout
+              style={{ marginLeft: 10 }}
+              onClick={handleLogout}
+            >
+              Logout
             </Button>
+          </div>
         </Container>
       </Toolbar>
-      
     </AppBar>
   );
 };
